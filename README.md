@@ -2,13 +2,6 @@
 
 A lightweight macOS terminal tool to manage projects and their shortcuts (URLs & directories).
 
-## Features
-- Add, list, rename, and remove projects.
-- Select one project as the active project.
-- Within a project, add/remove/list shortcuts to URLs and directories.
-- `project goto <key>`: opens URLs in the browser or prints directory path for easy `cd $(...)`.
-- **Shell autocompletion** for zsh and bash.
-
 ### Usage
 ```bash
 project add project-a
@@ -19,14 +12,14 @@ project goto list          # URLs first, then directories
 project goto list url      # only URLs
 project goto list dir      # only directories
 project goto url           # opens browser
-cd $(project goto frontend) # change directory
+project goto frontend  # directly opens URL or switches to directory
 project list
 ```
 
 
 ### Enable Autocomplete (zsh)
 
-Add the file to your path and enable:
+Add the file to your fpath and enable:
 ```bash
 # from repo root
 mkdir -p ~/.zsh/completions
