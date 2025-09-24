@@ -10,7 +10,7 @@ APP_NAME = "project-cli"
 CONFIG_DIR = Path.home() / ".project-cli"
 DATA_FILE = CONFIG_DIR / "projects.json"
 
-KNOWN_SUBCMDS = {"add", "list", "rename", "remove", "active", "help"}
+KNOWN_SUBCMDS = {"add", "list", "rename", "remove", "active"}
 
 
 # ---------------- Utilities ---------------- #
@@ -170,12 +170,6 @@ def build_parser():
         print(d.get("active-project") or "<none>")
 
     p_act.set_defaults(func=show_active)
-    p_help = sub.add_parser("help", help="Show help")
-
-    def show_help(_):
-        print(USAGE)
-
-    p_help.set_defaults(func=show_help)
 
     return p
 
