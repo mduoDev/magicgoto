@@ -2,7 +2,7 @@
 set -euo pipefail
 
 TARGET="/usr/local/bin/project"
-SCRIPT_NAME="project"
+SCRIPT_NAME="project.py"
 
 # Prefer /opt/homebrew on Apple Silicon if writable
 if [[ $(uname -m) == "arm64" && -d "/opt/homebrew/bin" && -w "/opt/homebrew/bin" ]]; then
@@ -10,7 +10,7 @@ if [[ $(uname -m) == "arm64" && -d "/opt/homebrew/bin" && -w "/opt/homebrew/bin"
 fi
 
 if [[ ! -f "$SCRIPT_NAME" ]]; then
-  echo "Run this from the directory containing the 'project' script." >&2
+  echo "Run this from the directory containing the 'project.py' script." >&2
   exit 1
 fi
 

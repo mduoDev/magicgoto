@@ -12,6 +12,7 @@ DATA_FILE = CONFIG_DIR / "projects.json"
 
 KNOWN_SUBCMDS = {"add", "list", "rename", "remove", "goto", "active", "help"}
 
+
 # ---------------- Utilities ---------------- #
 
 def expand_path(p: str) -> str:
@@ -41,8 +42,7 @@ def save_data(d: dict) -> None:
 def ensure_active(d: dict) -> str:
     active = d.get("active-project")
     if not active:
-        print("No active project. Select one: `project <name>` or create with `project add <name>`.
-", file=sys.stderr)
+        print("No active project. Select one: `project <name>` or create with `project add <name>`. ", file=sys.stderr)
         sys.exit(2)
     if active not in d:
         print(f"Active project '{active}' missing. Fix by selecting another: `project <name>`.", file=sys.stderr)
@@ -91,7 +91,8 @@ def cmd_add(args):
     d.setdefault("active-project", d.get("active-project") or name)
     d[name] = d.get(name, {})
     save_data(d)
-    print(f"Added project '{name}'. Active = {d['active-project']}")
+    select_project(name)
+    print(f"Added project '{name}'. Active = {name}")
 
 
 def cmd_list(_args):
@@ -99,7 +100,7 @@ def cmd_list(_args):
     active = d.get("active-project")
     projects = [k for k in d.keys() if k != "active-project"]
     if not projects:
-        print("No projects yet. Add one with `project add <name>`." )
+        print("No projects yet. Add one with `project add <name>`.")
         return
     for k in sorted(projects):
         star = "*" if k == active else " "
@@ -163,7 +164,7 @@ def goto_list(args):
     active = ensure_active(d)
     entries = d.get(active, {})
     if not entries:
-        print(f"[{active}] No shortcuts yet. Add with `project goto add <key> <url|path>`." )
+        print(f"[{active}] No shortcuts yet. Add with `project goto add <key> <url|path>`.")
         return
 
     urls = {k: v for k, v in entries.items() if v.startswith("http://") or v.startswith("https://")}
@@ -270,6 +271,9 @@ def build_parser():
 
     # goto group
     p_goto = sub.add_parser("goto", help="Manage shortcuts for the active project")
+    p_goto.add_argument("key")
+    p_goto.set_defaults(func=goto_key)
+
     s = p_goto.add_subparsers(dest="gcmd")
 
     g_add = s.add_parser("add", help="Add a shortcut: key + url|path")
@@ -290,21 +294,21 @@ def build_parser():
     g_rm.add_argument("key")
     g_rm.set_defaults(func=goto_remove)
 
-    g_key = s.add_parser("key", help="Open or output shortcut by key")
-    g_key.add_argument("key")
-    g_key.set_defaults(func=goto_key)
-
     # active
     p_act = sub.add_parser("active", help="Show active project")
+
     def show_active(_):
         d = load_data()
         print(d.get("active-project") or "<none>")
+
     p_act.set_defaults(func=show_active)
 
     # help
     p_help = sub.add_parser("help", help="Show help")
+
     def show_help(_):
         print(USAGE)
+
     p_help.set_defaults(func=show_help)
 
     return p
@@ -378,6 +382,7 @@ def main():
     # Allow direct `project goto <key>` without extra subcommand
     if args.cmd == "goto" and args.gcmd is None and len(sys.argv) >= 3:
         class FakeArgs: pass
+
         fake = FakeArgs()
         fake.key = sys.argv[2]
         goto_key(fake)
