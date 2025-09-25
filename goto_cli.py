@@ -36,7 +36,7 @@ def goto_add(args):
     d = load_data()
     active = ensure_active(d)
     key, val = args.key, args.value
-    stored = val if val.startswith("http") else os.path.expanduser(val)
+    stored = val if val.startswith("http") else os.path.abspath(val)
     d[active][key] = stored
     save_data(d)
     print(f"[{active}] set '{key}' -> {stored}")
@@ -48,7 +48,8 @@ def goto_update(args):
     if args.key not in d[active]:
         print(f"No such shortcut: {args.key}", file=sys.stderr)
         sys.exit(1)
-    new_val = args.value if args.value.startswith("http") else os.path.expanduser(args.value)
+    new_val = args.value if args.value.startswith("http") else os.path.abspath(args.value)
+    print(new_val)
     d[active][args.key] = new_val
     save_data(d)
     print(f"[{active}] updated '{args.key}' -> {new_val}")
@@ -105,7 +106,8 @@ def goto_key(args):
     if target.startswith("http"):
         os.system(f"open {target}")
     else:
-        print(os.path.expanduser(target))
+        print(f"cd {target}")
+        os.system(f"cd {target}")
 
 
 def build_parser():
