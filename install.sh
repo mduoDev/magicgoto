@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET="/usr/local/bin/project"
-SCRIPT_NAME="project.py"
-
-# Prefer /opt/homebrew on Apple Silicon if writable
+# Set target directory
+TARGET_DIR="/usr/local/bin"
 if [[ $(uname -m) == "arm64" && -d "/opt/homebrew/bin" && -w "/opt/homebrew/bin" ]]; then
-  TARGET="/opt/homebrew/bin/project"
+  TARGET_DIR="/opt/homebrew/bin"
 fi
 
-if [[ ! -f "$SCRIPT_NAME" ]]; then
-  echo "Run this from the directory containing the 'project.py' script." >&2
-  exit 1
-fi
+declare -A SCRIPTS=(["goto"]="goto_cli.py" ["project"]="project_cli.py" )
 
-chmod +x "$SCRIPT_NAME"
-mkdir -p "$(dirname "$TARGET")"
-cp "$SCRIPT_NAME" "$TARGET"
+for NAME in "${!SCRIPTS[@]}"; do
+  SCRIPT="${SCRIPTS[$NAME]}"
+  TARGET="$TARGET_DIR/$NAME"
 
-echo "Installed to $TARGET"
-"$TARGET" help || true
+  if [[ ! -f "$SCRIPT" ]]; then
+    echo "Run this from the directory containing '$SCRIPT'." >&2
+    exit 1
+  fi
+
+  chmod +x "$SCRIPT"
+  mkdir -p "$(dirname "$TARGET")"
+  cp "$SCRIPT" "$TARGET"
+  echo "Installed $SCRIPT to $TARGET"
+done
