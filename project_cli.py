@@ -9,6 +9,7 @@ from pathlib import Path
 APP_NAME = "project-cli"
 CONFIG_DIR = Path.home() / ".project-cli"
 DATA_FILE = CONFIG_DIR / "projects.json"
+DEBUG = False
 
 KNOWN_SUBCMDS = {"add", "list", "rename", "remove", "active"}
 
@@ -94,7 +95,7 @@ def cmd_list(_args):
         print("No projects yet. Add one with `project add <name>`.")
         return
     for k in sorted(projects):
-        star = "*" if k == active else " "
+        star = "*" if k == active and DEBUG else " "
         count = len(d.get(k, {}))
         print(f"{star} {k} ({count} shortcut{'s' if count != 1 else ''})")
 
@@ -181,7 +182,7 @@ def select_project(name: str):
         sys.exit(1)
     d["active-project"] = name
     save_data(d)
-    print(f"Selected active project: {name}")
+    if DEBUG: print(f"Selected active project: {name}")
 
 
 def main():

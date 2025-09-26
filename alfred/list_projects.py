@@ -6,9 +6,7 @@ lines = result.stdout.strip().split('\n')
 
 items = []
 for key in lines:
-    if key == 'active-project':
-        continue
-    key = key.strip().split(" ").pop(0)
+    key = key.strip().split(" ").pop(0).strip()
     items.append({
         "title": key,
         # "subtitle": key,

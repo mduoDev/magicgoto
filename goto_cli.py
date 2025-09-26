@@ -106,8 +106,7 @@ def goto_key(args):
     if target.startswith("http"):
         os.system(f"open {target}")
     else:
-        print(f"cd {target}")
-        os.system(f"cd {target}")
+        print(f"{target}")
 
 
 def build_parser():
