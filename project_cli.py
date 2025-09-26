@@ -87,10 +87,29 @@ def cmd_add(args):
     print(f"Added project '{name}'. Active = {name}")
 
 
-def cmd_list(_args):
+def cmd_list(args):
     d = load_data()
     active = d.get("active-project")
     projects = [k for k in d.keys() if k != "active-project"]
+    
+    # If a key is specified, filter projects that contain that key
+    if hasattr(args, 'key') and args.key:
+        filtered_projects = []
+        for project_name in projects:
+            project_data = d.get(project_name, {})
+            if args.key in project_data:
+                filtered_projects.append(project_name)
+        projects = filtered_projects
+        
+        if not projects:
+            print(f"No projects found with key '{args.key}'.")
+            return
+            
+        # For key-filtered results, just show the project names
+        for k in sorted(projects):
+            print(k)
+        return
+    
     if not projects:
         print("No projects yet. Add one with `project add <name>`.")
         return
@@ -148,6 +167,7 @@ def build_parser():
 
     # list
     p_list = sub.add_parser("list", help="List projects")
+    p_list.add_argument("key", nargs="?", help="Filter projects by key (optional)")
     p_list.set_defaults(func=cmd_list)
 
     # rename
