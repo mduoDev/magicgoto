@@ -1,7 +1,17 @@
+#!/usr/bin/env python3
 import subprocess
 import json
+import sys
 
-result = subprocess.run(['project', 'list'], capture_output=True, text=True)
+# Get optional filter key from command line argument
+filter_key = sys.argv[1] if len(sys.argv) > 1 else None
+
+# Build command with optional filter parameter
+cmd = ['project', 'list']
+if filter_key:
+    cmd.append(filter_key)
+
+result = subprocess.run(cmd, capture_output=True, text=True)
 lines = result.stdout.strip().split('\n')
 
 items = []

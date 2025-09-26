@@ -61,14 +61,7 @@ def goto_list(args):
     entries = d.get(active, {})
     urls = {k: v for k, v in entries.items() if v.startswith("http")}
     dirs = {k: v for k, v in entries.items() if not v.startswith("http")}
-    if args.filter == "url":
-        for k, v in urls.items():
-            print(f"- {k}: {v}")
-        return
-    if args.filter == "dir":
-        for k, v in dirs.items():
-            print(f"- {k}: {v}")
-        return
+
     if urls:
         print("URLs:")
         for k, v in urls.items():
