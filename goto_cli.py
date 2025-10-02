@@ -63,13 +63,16 @@ def goto_list(args):
     dirs = {k: v for k, v in entries.items() if not v.startswith("http")}
 
     if urls:
-        print("URLs:")
-        for k, v in urls.items():
-            print(f"- {k}: {v}")
+        if args.filter is None or args.filter == "url":
+            print("URLs:")
+            for k, v in urls.items():
+                print(f"- {k}: {v}")
+            print()
     if dirs:
-        print("Directories:")
-        for k, v in dirs.items():
-            print(f"- {k}: {v}")
+        if args.filter is None or args.filter == "dir":
+            print("Directories:")
+            for k, v in dirs.items():
+                print(f"- {k}: {v}")
 
 
 def goto_rename(args):
