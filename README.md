@@ -37,17 +37,6 @@ goto remove frontend                      # Remove shortcut
 
 ### Enable Autocomplete (zsh)
 
-Add the file to your fpath and enable:
-```bash
-# from repo root
-mkdir -p ~/.zsh/completions
-cp completion/project.zsh ~/.zsh/completions/_project
-# in ~/.zshrc
-fpath=(~/.zsh/completions $fpath)
-autoload -Uz compinit && compinit
-# reload shell or: source ~/.zshrc
-```
-
 ### Uninstall
 ```bash
 chmod +x uninstall.sh
