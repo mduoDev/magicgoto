@@ -94,17 +94,18 @@ def cmd_list(args):
     
     # If a key is specified, filter projects that contain that key
     if hasattr(args, 'key') and args.key:
-        filtered_projects = []
-        for project_name in projects:
-            project_data = d.get(project_name, {})
-            if args.key in project_data:
-                filtered_projects.append(project_name)
-        projects = filtered_projects
+        inverted = args.key.startswith("!")
+
+        if inverted: args.key = args.key[1:]
+        projects = set([p for p in projects if args.key in d.get(p, {})])
         
         if not projects:
             print(f"No projects found with key '{args.key}'.")
             return
-            
+
+        if inverted:
+            projects.difference(set(projects))
+
         # For key-filtered results, just show the project names
         for k in sorted(projects):
             print(k)
