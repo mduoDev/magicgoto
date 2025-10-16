@@ -18,7 +18,7 @@ lines = result.stdout.strip().split('\n')[1:]
 
 items = []
 for key in lines:
-    matches = re.match(r'^- (\w+?): (.+)', key)
+    matches = re.match(r'^- ([\w|-]+?): (.+)', key)
 
     if not matches: continue
 
