@@ -9,6 +9,12 @@ fi
 
 declare -A SCRIPTS=(["goto"]="goto_cli.py" ["project"]="project_cli.py" )
 
+# Ensure pytest is installed
+if ! pytest tests; then
+  echo "Unit tests failed. Aborting installation." >&2
+  exit 1
+fi
+
 for NAME in "${!SCRIPTS[@]}"; do
   SCRIPT="${SCRIPTS[$NAME]}"
   TARGET="$TARGET_DIR/$NAME"
