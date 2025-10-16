@@ -105,6 +105,15 @@ def goto_key(args):
         print(f"{target}")
 
 
+def goto_haskey(args):
+    d = load_data()
+    active = ensure_active(d)
+    entries = d.get(active, {})
+    val = entries.get(args.key)
+    if val:
+        print(val)
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="goto")
     sub = p.add_subparsers(dest="cmd")
@@ -133,12 +142,16 @@ def build_parser():
     g_rm.add_argument("key", help="Shortcut key to remove")
     g_rm.set_defaults(func=goto_remove)
 
+    g_haskey = sub.add_parser("haskey", help="Check if shortcut key exists and print value")
+    g_haskey.add_argument("key", help="Shortcut key to check")
+    g_haskey.set_defaults(func=goto_haskey)
+
     return p
 
 
 def main():
     parser = build_parser()
-    known_cmds = {"add", "update", "list", "rename", "remove"}
+    known_cmds = {"add", "update", "list", "rename", "remove", "haskey"}
     if len(sys.argv) > 1 and sys.argv[1] not in known_cmds:
         # Treat as key lookup: goto <key>
         class Args:
