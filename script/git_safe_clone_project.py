@@ -8,17 +8,28 @@ def run_cmd(cmd):
     return result.stdout.strip()
 
 
+def convert_clone_url(repo_url: str) -> str:
+    clone_url = repo_url \
+        .replace('.no/projects/', '.no/scm/') \
+        .replace('/repos/', '/')
+
+    if clone_url.endswith("/"): clone_url = clone_url[:-1]
+    clone_url = clone_url + ".git"
+    return clone_url
+
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python git_clone_project.py <project-name>")
+        print("Usage: python git_safe_clone_project.py <project-name>")
         sys.exit(1)
 
     project = sys.argv[1]
+    print(f"cloning {project}")
 
     # Check if dir is not empty
     dir_val = run_cmd(f"project {project} && goto haskey dir")
     if dir_val:
-        raise Exception("Error: dir is not empty for this project.")
+        raise Exception(f"Error: dir is not empty for this project. {project}")
 
     # Check if repo is empty
     repo_val = run_cmd(f"project {project} && goto haskey repo")
@@ -28,14 +39,11 @@ def main():
 
     # Clone the repo
     os.chdir(os.path.expanduser("~/repo"))
-    repo_url = (run_cmd(f"project {project} && goto haskey repo") \
-                .replace('.no/projects/', '.no/scm/') \
-                .replace('/repos/', '/'))
+    repo_url = run_cmd(f"project {project} && goto haskey repo")
 
-    if repo_url.endswith("/"): repo_url = repo_url[:-1]
-    repo_url = repo_url + ".git"
+    clone_url = convert_clone_url(repo_url)
 
-    subprocess.check_call(f"git clone {repo_url}", shell=True)
+    subprocess.check_call(f"git clone {clone_url}", shell=True)
 
     #  Add dir
     os.chdir(os.path.join(os.getcwd(), project))
