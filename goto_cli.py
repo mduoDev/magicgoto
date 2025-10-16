@@ -81,6 +81,12 @@ def goto_list(args):
 def goto_rename(args):
     d = load_data()
     active = ensure_active(d)
+    if args.old not in d[active]:
+        print(f"No such shortcut: {args.old}", file=sys.stderr)
+        sys.exit(1)
+    if args.new in d[active]:
+        print(f"Shortcut '{args.new}' already exists.", file=sys.stderr)
+        sys.exit(1)
     d[active][args.new] = d[active].pop(args.old)
     save_data(d)
     print(f"[{active}] renamed '{args.old}' -> '{args.new}'")
@@ -89,6 +95,9 @@ def goto_rename(args):
 def goto_remove(args):
     d = load_data()
     active = ensure_active(d)
+    if args.key not in d[active]:
+        print(f"No such shortcut: {args.key}", file=sys.stderr)
+        sys.exit(1)
     del d[active][args.key]
     save_data(d)
     print(f"[{active}] removed '{args.key}'")
