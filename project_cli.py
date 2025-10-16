@@ -90,35 +90,38 @@ def cmd_add(args):
 def cmd_list(args):
     d = load_data()
     active = d.get("active-project")
-    projects = [k for k in d.keys() if k != "active-project"]
-    
+    projects = d.keys()
+
     # If a key is specified, filter projects that contain that key
     if hasattr(args, 'key') and args.key:
         inverted = args.key.startswith("!")
 
         if inverted: args.key = args.key[1:]
-        projects = set([p for p in projects if args.key in d.get(p, {})])
-        
-        if not projects:
+        filtered_projects = set([p for p in projects if args.key in d.get(p, {})])
+
+        if not filtered_projects:
             print(f"No projects found with key '{args.key}'.")
             return
 
         if inverted:
-            projects.difference(set(projects))
+            filtered_projects = set(projects).difference(filtered_projects)
 
         # For key-filtered results, just show the project names
-        for k in sorted(projects):
+        for k in sorted(filtered_projects):
             print(k)
+        print(len(filtered_projects))
         return
-    
+
     if not projects:
         print("No projects yet. Add one with `project add <name>`.")
         return
+
     for k in sorted(projects):
         star = "*" if k == active and DEBUG else " "
         count = len(d.get(k, {}))
         print(f"{star} {k} ({count} shortcut{'s' if count != 1 else ''})")
 
+    print(len(projects))
 
 def cmd_rename(args):
     d = load_data()

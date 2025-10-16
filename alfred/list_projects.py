@@ -19,7 +19,6 @@ for key in lines:
     key = key.strip().split(" ").pop(0).strip()
     items.append({
         "title": key,
-        # "subtitle": key,
         "arg": key,
         "autocomplete": key,
     })
