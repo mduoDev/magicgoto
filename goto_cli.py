@@ -36,6 +36,9 @@ def goto_add(args):
     d = load_data()
     active = ensure_active(d)
     key, val = args.key, args.value
+    if key in d[active]:
+        print(f"Shortcut '{key}' already exists.", file=sys.stderr)
+        sys.exit(1)
     stored = val if val.startswith("http") else os.path.abspath(val)
     d[active][key] = stored
     save_data(d)
