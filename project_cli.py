@@ -224,6 +224,10 @@ def main():
     if len(sys.argv) == 1:
         parser.print_help()
         return
+
+    if len(sys.argv) > 1 and sys.argv[1] in ("--help", "-h"):
+        parser.print_help()
+        sys.exit(0)
     args = parser.parse_args()
 
     if hasattr(args, "func"):

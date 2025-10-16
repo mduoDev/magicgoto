@@ -155,6 +155,9 @@ def build_parser():
 def main():
     parser = build_parser()
     known_cmds = {"add", "update", "list", "rename", "remove", "haskey"}
+    if len(sys.argv) > 1 and sys.argv[1] in ("--help", "-h"):
+        parser.print_help()
+        sys.exit(0)
     if len(sys.argv) > 1 and sys.argv[1] not in known_cmds:
         # Treat as key lookup: goto <key>
         class Args:
